@@ -65,3 +65,13 @@ and changed
 to
 `.then((data: GithubUsers) => db.one(
       'INSERT INTO github_users (id, login, name, company, location) VALUES ($[id],$[login],$[name],$[company],$[location]) RETURNING id', data)`
+
+**4. Don't allow duplicate users on the database;**
+
+I want to make unique the *login* fields.
+I added a code, to be used only once, because I cannot add a unique constraint, when I have duplicated entries in the table.
+Si I drop github_users with `/* if (process.argv[3]) {
+  db.none('DROP TABLE github_users').then((data)=>{console.info('Table github_users dropped');console.table(data)});
+};  */` using a any second argument and then, I commented out this snippet, to have a working example, strating from the beggining, to be able to add a unique field *login*.
+Still hasn't figured out a way, to avoid the message *"login_unique" already exists*
+
