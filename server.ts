@@ -2,6 +2,12 @@ const pgPromise = require('pg-promise');
 const R         = require('ramda');
 const request   = require('request-promise');
 
+let login = 'gaearon';
+if (process.argv[2]) {
+  login = process.argv[2];
+};
+const uri = 'https://api.github.com/users/' + login;
+
 // Limit the amount of debugging of SQL expressions
 const trimLogsSize : number = 200;
 
@@ -48,10 +54,10 @@ const db = pgp(options);
 
 db.none('CREATE TABLE  IF NOT EXISTS github_users (id BIGSERIAL, login TEXT, name TEXT, company TEXT)')
 .then(() => request({
-  uri: 'https://api.github.com/users/gaearon',
+  uri: uri,
   headers: {
-        'User-Agent': 'Request-Promise'
-    },
+    'User-Agent': 'Request-Promise'
+  },
   json: true
 }))
 .then((data: GithubUsers) => db.one(
