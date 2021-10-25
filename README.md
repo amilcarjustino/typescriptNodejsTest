@@ -14,24 +14,25 @@
 
 Replaced in *server.ts*
 `db.none('CREATE TABLE github_users (id BIGSERIAL, login TEXT, name TEXT, company TEXT)')`
-with
+   with    
 `db.none('CREATE TABLE  IF NOT EXISTS github_users (id BIGSERIAL, login TEXT, name TEXT, company TEXT)')`
 
 
 
 **2. Improve the program to take a command line argument with the name of the github user;**
 
-First, changed *package.json*, *scripts/test* file 
+First, changed *package.json*, *scripts/test* file   
 `"test": "node ./node_modules/ts-node/dist/bin.js server.ts" ` 
-to
+  to  
  `"test": "node ./node_modules/ts-node/dist/bin.js server.ts $1"`
 
-Then added in *server.ts* `let login = 'gaearon';
+Then added in *server.ts*   
+`let login = 'gaearon';
 if (process.argv[2]) {
   login = process.argv[2];
 };` 
 
-and created a new constant:
+and created a new constant:  
 `const uri = 'https://api.github.com/users/' + login;` 
 to use further in 
 `.then(() => request({
@@ -50,3 +51,17 @@ to use further in
     },
   json: true
 }))`
+
+
+**3. Add more fields (to the database and to the API calls;**
+
+Decided to add the fields: (id, name, company, location).
+Changed in *server.ts* file:
+Added `.then(()=>db.none('ALTER TABLE github_users ADD COLUMN IF NOT EXISTS location TEXT'))` in promise chain.
+and changed
+
+`.then((data: GithubUsers) => db.one(
+  'INSERT INTO github_users (login) VALUES ($[login]) RETURNING id', data)`
+to
+`.then((data: GithubUsers) => db.one(
+      'INSERT INTO github_users (id, login, name, company, location) VALUES ($[id],$[login],$[name],$[company],$[location]) RETURNING id', data)`
