@@ -20,7 +20,7 @@
     "@types/request-promise": "^4.1.33",
     "@types/winston": "^2.3.0",
     "bluebird": "^3.5.0",
-    "pg-promise": "^5.6.4",
+    "pg-promise": "^10.11.1",
     "ramda": "^0.23.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
